@@ -43,39 +43,39 @@ const MAXRATING = 85;
 const MINRATING = 73;
 
 generateBtn.addEventListener("click", () => {
-  temp = [];
   teamsContainer.innerHTML = "";
-  if (
-    input.value >= 1 &&
-    input.value <= 10 &&
-    fromInput.value >= MINRATING &&
-    toInput.value <= MAXRATING
-  ) {
-    for (let i = 1; i <= input.value; i++) {
-      while (true) {
-        let randomNum = Math.floor(Math.random() * teams.length);
-        if (
-          !temp.includes(teams[randomNum].name) &&
-          teams[randomNum].rating >= fromInput.value &&
-          teams[randomNum].rating <= toInput.value
-        ) {
-          createTeam(
-            i,
-            teams[randomNum].name,
-            teams[randomNum].logo,
-            teams[randomNum].rating,
-            teams[randomNum].league,
-          );
-          temp.push(teams[randomNum].name);
-          break;
-        }
-      }
+
+  const count = +input.value;
+  const min = +fromInput.value;
+  const max = +toInput.value;
+
+  if (count >= 1 && count <= 10 && min >= MINRATING && max <= MAXRATING) {
+    const filteredTeams = teams.filter(
+      (team) => team.rating >= min && team.rating <= max,
+    );
+
+    if (filteredTeams.length < count) {
+      teamsContainer.innerHTML = `
+        <div class="invalid-msg">
+          <h2>Not enough teams</h2>
+          <p>Available teams: ${filteredTeams.length}</p>
+        </div>`;
+      return;
     }
+
+    const shuffled = filteredTeams.sort(() => 0.5 - Math.random());
+
+    const selected = shuffled.slice(0, count);
+
+    selected.forEach((team, i) => {
+      createTeam(i + 1, team.name, team.logo, team.rating, team.league);
+    });
   } else {
-    teamsContainer.innerHTML = `<div class="invalid-msg">
+    teamsContainer.innerHTML = `
+      <div class="invalid-msg">
         <h2>Error: INVALID</h2>
-        <p>Minumam rating: 73<br />Maxumam rating: 85</p>
-        <p>Minumam Teams: 1<br />Maxumam Teams: 10</p>
+        <p>Min rating: 73<br />Max rating: 85</p>
+        <p>Min teams: 1<br />Max teams: 10</p>
       </div>`;
   }
 });
