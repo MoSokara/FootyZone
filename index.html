@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>FootyZone</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=Outfit:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <h1>Football Random Teams Generator</h1>
+
+    <div class="team-input">
+      <div class="rating-input">
+        <h2>Rating:</h2>
+        <div>
+          <div class="from-input">
+            <label for="from-input">From</label>
+            <input
+              id="from-input"
+              type="number"
+              min="73"
+              max="84"
+              autocomplete="off"
+              placeholder="Min: 73"
+              required
+            />
+          </div>
+          <div class="to-input">
+            <label for="to-input">To</label>
+            <input
+              id="to-input"
+              type="number"
+              min="74"
+              max="85"
+              autocomplete="off"
+              placeholder="Max: 85"
+              required
+            />
+          </div>
+        </div>
+      </div>
+      <input
+        id="team-input"
+        type="text"
+        inputmode="numeric"
+        pattern="[0-9]*"
+        autocomplete="off"
+        placeholder="Enter Number from 1 to 10"
+        required
+      />
+      <button id="generate-btn">Generate</button>
+    </div>
+
+    <div id="teams-container"></div>
+
+    <!-- <div id="matches-container">
+      <div class="match"></div>
+    </div> -->
+
+    <script type="module" src="script.js"></script>
+    <script type="module" src="teams.js"></script>
+  </body>
+</html>
