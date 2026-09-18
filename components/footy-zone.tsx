@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { RefreshCw, Search, Shuffle, Trophy } from "lucide-react";
 import type { Team } from "@/lib/types";
 import TeamCard from "@/components/football/team-card";
+import { Button } from "@/components/ui/button";
 import { shuffle } from "@/lib/game";
 
 const LEAGUES = [
@@ -159,15 +160,14 @@ export default function FootyZone() {
                 </div>
               </div>
 
-              <button
-                type="button"
+              <Button
                 onClick={generate}
                 disabled={loading || filteredTeams.length === 0}
-                className="inline-flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-primary px-3 text-xs font-semibold text-primary-foreground shadow-sm transition hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
+                className="h-10 w-full rounded-lg font-semibold"
               >
                 <RefreshCw size={15} />
                 Generate
-              </button>
+              </Button>
             </div>
           </aside>
 
