@@ -7,12 +7,14 @@ export function strengthLabel(value: number) {
   return "Underdog";
 }
 
-export function TeamStrength({ team, revealed = true }: { team: Team; revealed?: boolean }) {
-  if (!revealed) return <div className="mt-4 rounded-xl border border-[var(--accent)]/30 bg-[var(--accent-soft)] px-3 py-2 text-center text-sm text-[var(--accent)]">Strength hidden</div>;
+export function TeamStrength({ team }: { team: Team }) {
   return (
-    <div className="mt-4 flex items-end justify-between">
-      <div><p className="text-2xl font-bold">{team.strength}</p><p className="text-[11px] text-[var(--muted)]">{strengthLabel(team.strength)}</p></div>
-      <p className="max-w-24 text-right text-[11px] text-[var(--muted)]">{team.form ?? "No form data"}</p>
+    <div className="flex items-end justify-between border-t border-border pt-2">
+      <div>
+        <p className="text-xl font-semibold tabular-nums">{team.strength}</p>
+        <p className="text-[10px] text-muted-foreground">{strengthLabel(team.strength)}</p>
+      </div>
+      <p className="max-w-20 truncate text-right text-[10px] text-muted-foreground">{team.form ?? "—"}</p>
     </div>
   );
 }
