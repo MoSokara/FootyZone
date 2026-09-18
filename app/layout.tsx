@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 /** Provides the shared HTML document shell for application routes. */
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="dark">
       <body>{children}</body>
     </html>
   );
