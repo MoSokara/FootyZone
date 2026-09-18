@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { Copy, Heart, History, RefreshCw, Search, Shield, Sparkles, Swords, Trophy } from "lucide-react";
 import type { Team } from "@/lib/types";
@@ -25,6 +24,7 @@ function shuffle<T>(items: T[]) {
   return copy;
 }
 
+<<<<<<< HEAD
 /** Maps a gameplay strength score to its display tier. */
 function strengthLabel(value: number) {
   if (value >= 92) return "Elite";
@@ -37,6 +37,8 @@ function strengthLabel(value: number) {
  * Renders the interactive draft experience and persists favorite teams and
  * recent drafts in local storage.
  */
+=======
+>>>>>>> 0ef756dbd00b211734b23e1e2b1bc668c06e5386
 export default function FootyZone() {
   const [teams, setTeams] = useState<Team[]>([]);
   const [results, setResults] = useState<Team[]>([]);
@@ -272,6 +274,8 @@ export default function FootyZone() {
                 </div>
               )}
             </div>
+
+            <DuelMode teams={teams} />
 
             <section className="card mt-5 rounded-3xl p-5">
               <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
