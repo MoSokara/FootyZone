@@ -4,6 +4,13 @@ import { LEAGUES } from "@/lib/types";
 
 export const runtime = "nodejs";
 
+/**
+ * Serves supported-league team data or, when `mode=live`, current fixtures.
+ *
+ * Team requests may select comma-separated league IDs and a season; unsupported
+ * league IDs are ignored. Upstream and configuration errors become JSON 500
+ * responses rather than escaping the route handler.
+ */
 export async function GET(request: NextRequest) {
   try {
     const params = request.nextUrl.searchParams;

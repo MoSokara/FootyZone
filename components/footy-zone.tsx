@@ -31,6 +31,11 @@ function strengthLabel(value: number) {
   return "Underdog";
 }
 
+/**
+ * Renders the interactive draft experience backed by the internal football API.
+ * Favorites and recent drafts are persisted in browser local storage, while live
+ * fixtures are fetched only when requested.
+ */
 export default function FootyZone() {
   const [teams, setTeams] = useState<Team[]>([]);
   const [results, setResults] = useState<Team[]>([]);
