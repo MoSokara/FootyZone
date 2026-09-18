@@ -1,149 +1,60 @@
-# ⚽ FootyZone - Football Random Teams Generator
+# FootyZone
 
-[![GitHub stars](https://img.shields.io/github/stars/MoSokara/FootyZone?style=for-the-badge)](https://github.com/MoSokara/FootyZone/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/MoSokara/FootyZone?style=for-the-badge)](https://github.com/MoSokara/FootyZone/network)
-![License](https://img.shields.io/badge/license-Educational%20Use%20Only-red?style=for-the-badge)
-![Visitors](https://komarev.com/ghpvc/?username=MoSokara\&repo=FootyZone\&style=for-the-badge)
-[![Live Demo](https://img.shields.io/badge/Live%20Demo-View%20Site-green?style=for-the-badge\&logo=github)](https://mosokara.github.io/FootyZone/)
+FootyZone is a football team randomizer and draft game rebuilt as a modern Next.js application.
 
-<p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=MoSokara&show_icons=true&theme=tokyonight" />
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=MoSokara&layout=compact&theme=tokyonight" />
-</p>
+## What changed
 
-> 🎯 A modern web app that generates random football teams based on rating and number of players.
+The original project was a static HTML/CSS/JavaScript app with hard-coded team data and a large collection of local club-logo files. The modern branch replaces that data layer with API-Football and moves the application to:
 
----
+- Next.js App Router
+- React 19
+- TypeScript
+- Tailwind CSS v4
+- lucide-react
+- Server-side API proxy through a Next.js Route Handler
+- Remote club logos from API-Football
+- Local favorites and recent-draft history
+- Random, Balanced and Challenge modes
+- Responsive app-like UI
 
-## 📌 Overview
+## Supported leagues
 
-**FootyZone** is a simple yet powerful project built using **Vanilla JavaScript** that allows users to:
+- Premier League — 39
+- La Liga — 140
+- Bundesliga — 78
+- Serie A — 135
+- Ligue 1 — 61
 
-* Generate random football teams 🎲
-* Filter teams based on rating ⭐
-* Select number of teams (players) 👥
+## Local setup
 
-💡 This project is created **for educational purposes only** to practice front-end development skills.
+1. Create an API-Football account and obtain an API key.
+2. Copy `.env.example` to `.env.local`.
+3. Set `API_FOOTBALL_KEY=your_api_football_key` and `FOOTBALL_SEASON=2026`.
+4. Run `npm install`.
+5. Run `npm run dev`.
 
----
+## Architecture
 
-## ✨ Features
+The browser only talks to `/api/football`. The API key stays on the server in `API_FOOTBALL_KEY`.
 
-* ⚡ Fast and lightweight (no frameworks)
-* 🎯 Random team generator logic
-* 🎨 Modern dark UI design
-* 📊 Filter teams by rating range
-* 🚫 Prevents duplicate teams
-* 📱 Responsive layout
+Team/standings data is cached for one hour. The application loads teams once and performs randomization locally, so pressing Generate does not create another API request.
 
----
+Live fixtures are exposed through `/api/football?mode=live` with a short cache and are intended for an on-demand live radar feature.
 
-## 🖼️ Preview
+## Game Strength
 
-![FootyZone Preview](imgs/preview.png)
+FootyZone calculates a gameplay-only strength score from league position, points and recent form. It is deliberately labeled as a FootyZone score and is not an official club rating.
 
----
+## Deployment
 
-## 🌐 Live Demo
+Use a Next.js-capable host such as Vercel. Add `API_FOOTBALL_KEY` and `FOOTBALL_SEASON` as server environment variables.
 
-🔗 [https://mosokara.github.io/FootyZone/](https://mosokara.github.io/FootyZone/)
+Do not use a `NEXT_PUBLIC_` prefix for the API key.
 
----
+## API quota
 
-## 📥 Installation
+API-Football currently lists a free plan with 100 requests/day and 10 requests/minute. Because of that limit, the app avoids requesting the API on every randomization and uses server-side caching.
 
-Clone the repository:
+## Project status
 
-```bash
-git clone https://github.com/MoSokara/FootyZone.git
-cd FootyZone
-```
-
-Then open `index.html` in your browser.
-
----
-
-## 🛠️ Technologies Used
-
-* HTML5
-* CSS3 (Custom Properties + Modern UI)
-* JavaScript (ES6 Modules)
-
----
-
-## 📂 Project Structure
-
-```
-FootyZone/
-│
-├── index.html
-├── styles.css
-├── script.js
-├── teams.js
-└── assets/
-    └── imgs/
-```
-
----
-
-## ⚠️ License & Usage
-
-📌 This project is **NOT for commercial use**.
-
-* ❌ You are NOT allowed to sell this project
-* ❌ You are NOT allowed to use it in commercial products
-* ✔️ You can use it for learning and personal projects
-* ✔️ You can modify and improve it
-
-⚠️ Some images/logos may belong to their respective owners and are used for demonstration only.
-
----
-
-## 👨‍💻 Author
-
-**Mohamed Abdulghani Eid Sokara**
-💻 Computer Science Student
-
----
-
-## 📬 Contact Me
-
-* 📧 Email: [mosokara2007@gmail.com](mailto:mosokara2007@gmail.com)
-* 🌐 Portfolio: [https://mosokara.netlify.app/](https://mosokara.netlify.app/)
-* 💼 LinkedIn: [https://www.linkedin.com/in/mosokara](https://www.linkedin.com/in/mosokara)
-* 🐙 GitHub: [https://github.com/MoSokara](https://github.com/MoSokara)
-* 📘 Facebook: [https://www.facebook.com/share/1Hcx93GXj7/](https://www.facebook.com/share/1Hcx93GXj7/)
-* 🐦 Twitter (X): [https://x.com/Mo_Sokara](https://x.com/Mo_Sokara)
-* 📸 Instagram: [https://www.instagram.com/mosokara01/](https://www.instagram.com/mosokara01/)
-* ▶️ YouTube: [https://www.youtube.com/channel/UCc1bUS1LMBq9aiprI_YC9xA](https://www.youtube.com/channel/UCc1bUS1LMBq9aiprI_YC9xA)
-
----
-
-## 🧠 About Me
-
-> My name is Mohamed Abdulghani Eid Sokara, I'm an Egyptian Computer Science student.
-> I love coding, football, and building creative projects.
-
-⚽ Football Lover
-💻 Passionate Developer
-🇪🇬 Proud Egyptian
-
----
-
-## 🏁 My Slogan
-
-> ✨ *Coding is my art, and bugs are my puzzles.*
-
----
-
-## ⭐ Support
-
-If you like this project, don't forget to:
-
-* ⭐ Star the repo
-* 🍴 Fork it
-* 📢 Share it
-
----
-
-🔥 *Keep coding and improving!*
+The `modernize/next-api-football` branch is the active migration branch. Keep the original branch untouched until the modern version has been installed and tested locally.
