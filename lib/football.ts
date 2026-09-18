@@ -3,12 +3,12 @@ import "server-only";
 import type { FootballApiResponse, Team } from "./types";
 
 const API_URL = "https://v3.football.api-sports.io";
-const DEFAULT_SEASON = Number(process.env.FOOTBALL_SEASON ?? 2026);
+const DEFAULT_SEASON = Number(process.env.NEXT_PUBLIC_FOOTBALL_SEASON ?? 2026);
 
 /** Returns the server-side API key, throwing when it is not configured. */
 function getKey() {
-  const key = process.env.API_FOOTBALL_KEY;
-  if (!key) throw new Error("Missing API_FOOTBALL_KEY environment variable.");
+  const key = process.env.NEXT_PUBLIC_API_FOOTBALL_KEY;
+  if (!key) throw new Error("Missing NEXT_PUBLIC_API_FOOTBALL_KEY environment variable.");
   return key;
 }
 
