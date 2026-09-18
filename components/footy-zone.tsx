@@ -44,6 +44,8 @@ export default function FootyZone() {
   const [history, setHistory] = useState<Team[][]>([]);
   const [challengeRevealed, setChallengeRevealed] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [live, setLive] = useState<any[]>([]);
+  const [liveLoading, setLiveLoading] = useState(false);
 
   useEffect(() => {
     const savedFavorites = localStorage.getItem("footyzone:favorites");
@@ -117,6 +119,17 @@ export default function FootyZone() {
   }
 
   const favoriteTeams = teams.filter((team) => favorites.includes(team.id));
+
+  async function loadLive() {
+    setLiveLoading(true);
+    try {
+      const response = await fetch("/api/football?mode=live");
+      const data = await response.json();
+      setLive(data.response ?? []);
+    } finally {
+      setLiveLoading(false);
+    }
+  }
 
   return (
     <main className="app-shell">
@@ -248,6 +261,35 @@ export default function FootyZone() {
                 </div>
               )}
             </div>
+
+            <section className="card mt-5 rounded-3xl p-5">
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <div className="flex items-center gap-2"><span className="h-2 w-2 rounded-full bg-[var(--accent)]" /><h2 className="font-semibold">Live radar</h2></div>
+                  <p className="mt-1 text-xs text-[var(--muted)]">On-demand live fixtures. Refresh manually to protect the free API quota.</p>
+                </div>
+                <button onClick={loadLive} disabled={liveLoading} className="action rounded-xl border border-white/8 px-3 py-2 text-xs text-[var(--muted)] disabled:opacity-50">
+                  <RefreshCw size={14} className="mr-1 inline" /> {liveLoading ? "Loading..." : "Refresh"}
+                </button>
+              </div>
+              {live.length ? (
+                <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                  {live.slice(0, 9).map((fixture) => (
+                    <div key={fixture.fixture?.id} className="rounded-2xl border border-white/6 bg-black/15 p-3 text-sm">
+                      <div className="mb-2 text-[10px] uppercase tracking-wider text-[var(--muted)]">{fixture.league?.name ?? "Live match"}</div>
+                      <div className="flex items-center justify-between gap-2">
+                        <span>{fixture.teams?.home?.name ?? "Home"}</span>
+                        <strong>{fixture.goals?.home ?? 0} - {fixture.goals?.away ?? 0}</strong>
+                        <span className="text-right">{fixture.teams?.away?.name ?? "Away"}</span>
+                      </div>
+                      <div className="mt-2 text-center text-[10px] text-[var(--accent)]">{fixture.fixture?.status?.elapsed ? fixture.fixture.status.elapsed + "'" : fixture.fixture?.status?.short ?? "LIVE"}</div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-sm text-[var(--muted)]">No live data loaded. Press Refresh when you want to check current matches.</p>
+              )}
+            </section>
 
             <div className="mt-5 grid gap-5 xl:grid-cols-2">
               <section className="card rounded-3xl p-5">
