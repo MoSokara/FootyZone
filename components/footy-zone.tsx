@@ -37,8 +37,13 @@ export default function FootyZone() {
   useEffect(() => {
     const savedFavorites = localStorage.getItem("footyzone:favorites");
     const savedHistory = localStorage.getItem("footyzone:history");
-    if (savedFavorites) setFavorites(JSON.parse(savedFavorites));
-    if (savedHistory) setHistory(JSON.parse(savedHistory));
+    try {
+      if (savedFavorites) setFavorites(JSON.parse(savedFavorites));
+      if (savedHistory) setHistory(JSON.parse(savedHistory));
+    } catch {
+      localStorage.removeItem("footyzone:favorites");
+      localStorage.removeItem("footyzone:history");
+    }
   }, []);
 
   useEffect(() => {
@@ -117,7 +122,10 @@ export default function FootyZone() {
     try {
       const response = await fetch("/api/football?mode=live");
       const data = await response.json();
+      if (!response.ok) throw new Error(data.error ?? "Could not load live fixtures.");
       setLive(data.response ?? []);
+    } catch {
+      setLive([]);
     } finally {
       setLiveLoading(false);
     }
