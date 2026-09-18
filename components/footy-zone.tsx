@@ -1,8 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { Copy, Heart, History, RefreshCw, Search, Shield, Sparkles, Swords, Trophy } from "lucide-react";
+import { Copy, Heart, RefreshCw, Search, Shield, Sparkles, Trophy } from "lucide-react";
 import type { Team } from "@/lib/types";
+import TeamCard from "@/components/football/team-card";
+import DraftHistory from "@/components/football/draft-history";
 
 const LEAGUES = [
   { id: 39, name: "Premier League" },
@@ -14,31 +16,6 @@ const LEAGUES = [
 
 type Mode = "random" | "balanced" | "challenge";
 
-/** Returns a shuffled copy without modifying the input array. */
-function shuffle<T>(items: T[]) {
-  const copy = [...items];
-  for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
-  }
-  return copy;
-}
-
-<<<<<<< HEAD
-/** Maps a gameplay strength score to its display tier. */
-function strengthLabel(value: number) {
-  if (value >= 92) return "Elite";
-  if (value >= 86) return "Strong";
-  if (value >= 80) return "Competitive";
-  return "Underdog";
-}
-
-/**
- * Renders the interactive draft experience and persists favorite teams and
- * recent drafts in local storage.
- */
-=======
->>>>>>> 0ef756dbd00b211734b23e1e2b1bc668c06e5386
 export default function FootyZone() {
   const [teams, setTeams] = useState<Team[]>([]);
   const [results, setResults] = useState<Team[]>([]);
@@ -237,33 +214,7 @@ export default function FootyZone() {
               ) : results.length ? (
                 <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                   {results.map((team, index) => (
-                    <article key={team.id} className="team-card rounded-2xl border border-white/8 bg-[#0a0f13] p-4" style={{ animationDelay: `${index * 50}ms` }}>
-                      <div className="flex items-start justify-between">
-                        <div className="rounded-xl bg-white p-2">
-                          <Image src={team.logo} alt={`${team.name} logo`} width={56} height={56} className="h-14 w-14 object-contain" />
-                        </div>
-                        <button aria-label={`Favorite ${team.name}`} onClick={() => toggleFavorite(team.id)} className="rounded-lg p-2 text-[var(--muted)] hover:bg-white/5">
-                          <Heart size={18} fill={favorites.includes(team.id) ? "currentColor" : "none"} />
-                        </button>
-                      </div>
-                      <div className="mt-4">
-                        <h3 className="font-semibold">{team.name}</h3>
-                        <p className="mt-1 text-xs text-[var(--muted)]">{team.league} · Rank {team.rank ?? "—"}</p>
-                      </div>
-                      {mode === "challenge" && !challengeRevealed ? (
-                        <button onClick={() => setChallengeRevealed(true)} className="action mt-4 flex w-full items-center justify-center gap-2 rounded-xl border border-[var(--accent)]/30 bg-[var(--accent-soft)] py-2 text-sm text-[var(--accent)]">
-                          <Swords size={16} /> Reveal strength
-                        </button>
-                      ) : (
-                        <div className="mt-4 flex items-end justify-between">
-                          <div>
-                            <p className="text-2xl font-bold">{team.strength}</p>
-                            <p className="text-[11px] text-[var(--muted)]">{strengthLabel(team.strength)}</p>
-                          </div>
-                          <p className="max-w-24 text-right text-[11px] text-[var(--muted)]">{team.form ?? "No form data"}</p>
-                        </div>
-                      )}
-                    </article>
+                    <TeamCard key={team.id} team={team} favorite={favorites.includes(team.id)} revealed={mode !== "challenge" || challengeRevealed} onFavorite={() => toggleFavorite(team.id)} onReveal={() => setChallengeRevealed(true)} />
                   ))}
                 </div>
               ) : (
@@ -311,10 +262,7 @@ export default function FootyZone() {
                 <div className="mb-4 flex items-center gap-2"><Heart size={17} className="text-[var(--accent)]" /><h2 className="font-semibold">Favorites</h2></div>
                 {favoriteTeams.length ? <div className="flex flex-wrap gap-2">{favoriteTeams.map((team) => <button key={team.id} onClick={() => toggleFavorite(team.id)} className="rounded-full border border-white/8 px-3 py-1.5 text-xs hover:border-[var(--accent)]">{team.name}</button>)}</div> : <p className="text-sm text-[var(--muted)]">Favorite teams will appear here.</p>}
               </section>
-              <section className="card rounded-3xl p-5">
-                <div className="mb-4 flex items-center gap-2"><History size={17} className="text-[var(--accent)]" /><h2 className="font-semibold">Recent drafts</h2></div>
-                {history.length ? <div className="space-y-2">{history.slice(0, 4).map((draft, index) => <div key={index} className="text-xs text-[var(--muted)]">{draft.map((team) => team.name).join(" · ")}</div>)}</div> : <p className="text-sm text-[var(--muted)]">Your latest drafts will be saved locally.</p>}
-              </section>
+              <DraftHistory history={history} />
             </div>
           </div>
         </section>
