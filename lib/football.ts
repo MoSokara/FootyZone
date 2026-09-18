@@ -41,7 +41,14 @@ async function apiFetch<T>(path: string, revalidate = 3600): Promise<T> {
     throw new Error(`API-Football request failed: ${response.status}`);
   }
 
-  return response.json();
+  const data = await response.json();
+  const apiErrors = data?.errors;
+  if (apiErrors && Object.keys(apiErrors).length > 0) {
+    const message = Object.values(apiErrors).filter(Boolean).join("; ");
+    throw new Error(`API-Football: ${message || "request rejected"}`);
+  }
+
+  return data;
 }
 
 /**
@@ -53,6 +60,9 @@ export async function getTeams(leagueIds: number[], season = DEFAULT_SEASON): Pr
     leagueIds.map(async (leagueId) => {
       const data = await apiFetch<any>(`/standings?league=${leagueId}&season=${season}`, 3600);
       const table = data.response?.[0]?.league?.standings?.[0] ?? [];
+      if (!table.length) {
+        throw new Error(`No standings data returned for league ${leagueId} in season ${season}.`);
+      }
       const teamCount = table.length;
 
       return table.map((entry: any) => {
