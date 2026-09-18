@@ -59,9 +59,27 @@ export async function getTeams(leagueIds: number[], season = DEFAULT_SEASON): Pr
   const batches = await Promise.all(
     leagueIds.map(async (leagueId) => {
       const data = await apiFetch<any>(`/standings?league=${leagueId}&season=${season}`, 3600);
-      const table = data.response?.[0]?.league?.standings?.[0] ?? [];
+      let table = data.response?.[0]?.league?.standings?.[0] ?? [];
+
+      // Some competitions can briefly expose teams before their standings table is available.
+      // Fall back to the teams endpoint so the draft game remains usable.
       if (!table.length) {
-        throw new Error(`No standings data returned for league ${leagueId} in season ${season}.`);
+        const teamsData = await apiFetch<any>(`/teams?league=${leagueId}&season=${season}`, 3600);
+        const apiTeams = teamsData.response ?? [];
+
+        return apiTeams.map((item: any, index: number) => ({
+          id: Number(item.team.id),
+          name: item.team.name,
+          logo: item.team.logo,
+          leagueId,
+          league: data.response?.[0]?.league?.name ?? "Unknown League",
+          country: data.response?.[0]?.league?.country ?? "Unknown",
+          rank: null,
+          points: null,
+          form: null,
+          goalsDiff: 0,
+          strength: Math.round(85 - index * 0.5),
+        } satisfies Team));
       }
       const teamCount = table.length;
 
