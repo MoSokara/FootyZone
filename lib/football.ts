@@ -5,12 +5,17 @@ import type { FootballApiResponse, Team } from "./types";
 const API_URL = "https://v3.football.api-sports.io";
 const DEFAULT_SEASON = Number(process.env.FOOTBALL_SEASON ?? 2026);
 
+/** Returns the server-side API key, throwing when it is not configured. */
 function getKey() {
   const key = process.env.API_FOOTBALL_KEY;
   if (!key) throw new Error("Missing API_FOOTBALL_KEY environment variable.");
   return key;
 }
 
+/**
+ * Derives a gameplay strength score between 70 and 99 from table position,
+ * points, recent form, and the number of teams in the table.
+ */
 function calculateStrength(rank: number | null, points: number | null, form: string | null, teamCount: number) {
   const safeRank = rank ?? teamCount;
   const rankScore = teamCount <= 1 ? 85 : 99 - ((safeRank - 1) / (teamCount - 1)) * 25;
@@ -22,6 +27,10 @@ function calculateStrength(rank: number | null, points: number | null, form: str
   return Math.round(Math.min(99, Math.max(70, rankScore + pointsScore + formScore)));
 }
 
+/**
+ * Fetches and parses an API-Football path with Next.js cache revalidation.
+ * Throws when the API key is missing or the upstream response is unsuccessful.
+ */
 async function apiFetch<T>(path: string, revalidate = 3600): Promise<T> {
   const response = await fetch(`${API_URL}${path}`, {
     headers: { "x-apisports-key": getKey() },
@@ -35,6 +44,10 @@ async function apiFetch<T>(path: string, revalidate = 3600): Promise<T> {
   return response.json();
 }
 
+/**
+ * Fetches standings for the requested leagues and maps each entry to a team
+ * with a derived gameplay strength score.
+ */
 export async function getTeams(leagueIds: number[], season = DEFAULT_SEASON): Promise<Team[]> {
   const batches = await Promise.all(
     leagueIds.map(async (leagueId) => {
@@ -65,6 +78,7 @@ export async function getTeams(leagueIds: number[], season = DEFAULT_SEASON): Pr
   return batches.flat();
 }
 
+/** Fetches all live fixtures with a 30-second cache revalidation interval. */
 export async function getLiveFixtures() {
   return apiFetch<any>("/fixtures?live=all", 30);
 }

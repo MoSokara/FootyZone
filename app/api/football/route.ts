@@ -4,6 +4,10 @@ import { LEAGUES } from "@/lib/types";
 
 export const runtime = "nodejs";
 
+/**
+ * Returns live fixtures or teams from supported leagues, depending on the
+ * request's `mode` query parameter. Upstream failures produce a JSON 500 response.
+ */
 export async function GET(request: NextRequest) {
   try {
     const params = request.nextUrl.searchParams;
