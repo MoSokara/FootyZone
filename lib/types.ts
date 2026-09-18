@@ -15,6 +15,12 @@ export type Team = {
   points: number | null;
   form: string | null;
   goalsDiff: number | null;
+  played: number | null;
+  wins: number | null;
+  draws: number | null;
+  losses: number | null;
+  goalsFor: number | null;
+  goalsAgainst: number | null;
   strength: number;
 };
 
