@@ -4,44 +4,31 @@ import { TeamStrength } from "./strength";
 
 type Props = {
   team: Team;
-  favorite?: boolean;
-  onFavorite?: () => void;
-  compact?: boolean;
 };
 
-export default function TeamCard({ team, favorite = false, onFavorite, compact = false }: Props) {
+export default function TeamCard({ team }: Props) {
   return (
-    <article className={`team-card flex min-h-0 flex-col rounded-xl border border-border bg-background/70 p-3 ${compact ? "justify-between" : ""}`}>
-      <div className="flex items-start justify-between gap-2">
-        <div className={`flex items-center justify-center rounded-lg bg-white p-1.5 ${compact ? "size-11" : "size-14"}`}>
-          <Image
-            src={team.logo}
-            alt={`${team.name} logo`}
-            width={compact ? 40 : 52}
-            height={compact ? 40 : 52}
-            className="size-full object-contain"
-          />
-        </div>
-        {onFavorite && (
-          <button
-            type="button"
-            aria-label={`Favorite ${team.name}`}
-            onClick={onFavorite}
-            className="rounded-md p-1.5 text-muted-foreground transition hover:bg-muted hover:text-foreground"
-          >
-            <span className={favorite ? "text-primary" : ""}>♥</span>
-          </button>
-        )}
+    <article className="team-card flex min-h-0 flex-col rounded-xl border border-border bg-background/70 p-4">
+      <div className="flex items-center justify-center rounded-lg bg-white p-3">
+        <Image
+          src={team.logo}
+          alt={`${team.name} logo`}
+          width={72}
+          height={72}
+          className="size-16 object-contain"
+        />
       </div>
 
-      <div className="mt-2 min-w-0">
-        <h3 className={`truncate font-semibold ${compact ? "text-sm" : "text-base"}`}>{team.name}</h3>
-        <p className="mt-0.5 truncate text-[10px] text-muted-foreground">
-          {team.league} · {team.rank ? `#${team.rank}` : "Current"}
+      <div className="mt-3 min-w-0">
+        <h3 className="truncate text-base font-bold tracking-tight">{team.name}</h3>
+        <p className="mt-1 flex items-center gap-2 truncate text-xs text-muted-foreground">
+          <span className="truncate">{team.league}</span>
+          <span aria-hidden="true" className="size-1 shrink-0 rounded-full bg-muted-foreground/60" />
+          <span className="shrink-0">#{team.rank ?? "—"}</span>
         </p>
       </div>
 
-      <div className="mt-2">
+      <div className="mt-3 border-t border-border pt-3">
         <TeamStrength team={team} />
       </div>
     </article>
