@@ -1,6 +1,7 @@
 import "server-only";
 
 import type { FootballApiResponse, Team } from "./types";
+import { FALLBACK_TEAMS } from "./fallback-teams";
 
 const API_URL = "https://v3.football.api-sports.io";
 const DEFAULT_SEASON = Number(process.env.FOOTBALL_SEASON ?? 2026);
@@ -56,7 +57,11 @@ async function apiFetch<T>(path: string, revalidate = 3600): Promise<T> {
  * with a derived gameplay strength score.
  */
 export async function getTeams(leagueIds: number[], season = DEFAULT_SEASON): Promise<Team[]> {
-  const batches = await Promise.all(
+  if (!process.env.API_FOOTBALL_KEY) {
+    return FALLBACK_TEAMS.filter((team) => leagueIds.includes(team.leagueId));
+  }
+
+  const batches = await Promise.allSettled(
     leagueIds.map(async (leagueId) => {
       const data = await apiFetch<any>(`/standings?league=${leagueId}&season=${season}`, 3600);
       let table = data.response?.[0]?.league?.standings?.[0] ?? [];
@@ -103,7 +108,13 @@ export async function getTeams(leagueIds: number[], season = DEFAULT_SEASON): Pr
     }),
   );
 
-  return batches.flat();
+  const successful = batches
+    .filter((result): result is PromiseFulfilledResult<Team[]> => result.status === "fulfilled")
+    .flatMap((result) => result.value);
+
+  if (successful.length > 0) return successful;
+
+  return FALLBACK_TEAMS.filter((team) => leagueIds.includes(team.leagueId));
 }
 
 /** Fetches all live fixtures with a 30-second cache revalidation interval. */
