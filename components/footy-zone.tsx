@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { Copy, Heart, History, RefreshCw, Search, Shield, Sparkles, Swords, Trophy } from "lucide-react";
 import type { Team } from "@/lib/types";
@@ -22,13 +21,6 @@ function shuffle<T>(items: T[]) {
     [copy[i], copy[j]] = [copy[j], copy[i]];
   }
   return copy;
-}
-
-function strengthLabel(value: number) {
-  if (value >= 92) return "Elite";
-  if (value >= 86) return "Strong";
-  if (value >= 80) return "Competitive";
-  return "Underdog";
 }
 
 export default function FootyZone() {
