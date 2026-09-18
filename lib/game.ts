@@ -1,11 +1,10 @@
 export type DraftMode = "challenge" | "normal";
 
-type RatingBand = {
-  min: number;
-  max: number;
-};
+type ChallengeKind = "close" | "medium" | "wide";
 
-const CHALLENGE_BANDS: RatingBand[] = [
+const CHALLENGE_KINDS: ChallengeKind[] = ["close", "medium", "wide"];
+
+const CLOSE_BANDS = [
   { min: 70, max: 73 },
   { min: 80, max: 83 },
   { min: 85, max: 88 },
@@ -38,12 +37,15 @@ export function generateNormalPair<T extends { strength: number }>(teams: T[]) {
     }
   }
 
-  if (!pairs.length) return null;
-  return randomItem(pairs);
+  return pairs.length ? randomItem(pairs) : null;
 }
 
 export function generateChallengePair<T extends { strength: number }>(teams: T[]) {
-  const pairs: Array<[T, T]> = [];
+  const pairsByKind: Record<ChallengeKind, Array<[T, T]>> = {
+    close: [],
+    medium: [],
+    wide: [],
+  };
 
   for (let i = 0; i < teams.length; i += 1) {
     for (let j = i + 1; j < teams.length; j += 1) {
@@ -53,17 +55,19 @@ export function generateChallengePair<T extends { strength: number }>(teams: T[]
       const high = Math.max(first.strength, second.strength);
       const gap = high - low;
 
-      const closeBand = CHALLENGE_BANDS.some(
-        (band) => low >= band.min && high <= band.max,
-      );
-      const wideGap = gap >= 9;
-
-      if (closeBand || wideGap) {
-        pairs.push([first, second]);
+      if (CLOSE_BANDS.some((band) => low >= band.min && high <= band.max)) {
+        pairsByKind.close.push([first, second]);
+      } else if (gap >= 4 && gap <= 8) {
+        pairsByKind.medium.push([first, second]);
+      } else if (gap >= 9) {
+        pairsByKind.wide.push([first, second]);
       }
     }
   }
 
-  if (!pairs.length) return null;
-  return randomItem(pairs);
+  const availableKinds = CHALLENGE_KINDS.filter((kind) => pairsByKind[kind].length > 0);
+  if (!availableKinds.length) return null;
+
+  const kind = randomItem(availableKinds);
+  return randomItem(pairsByKind[kind]);
 }
