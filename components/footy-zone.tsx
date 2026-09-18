@@ -15,6 +15,7 @@ const LEAGUES = [
 
 type Mode = "random" | "balanced" | "challenge";
 
+/** Returns a shuffled copy without modifying the input array. */
 function shuffle<T>(items: T[]) {
   const copy = [...items];
   for (let i = copy.length - 1; i > 0; i--) {
@@ -24,6 +25,7 @@ function shuffle<T>(items: T[]) {
   return copy;
 }
 
+/** Maps a gameplay strength score to its display tier. */
 function strengthLabel(value: number) {
   if (value >= 92) return "Elite";
   if (value >= 86) return "Strong";
@@ -68,6 +70,7 @@ export default function FootyZone() {
   }, [history]);
 
   useEffect(() => {
+    /** Loads the initial team list and reflects request failures in component state. */
     async function load() {
       setLoading(true);
       setError("");
@@ -94,6 +97,7 @@ export default function FootyZone() {
     });
   }, [teams, league, query]);
 
+  /** Generates a draft from the active filters and records it in recent history. */
   function generate() {
     if (!filteredTeams.length) return;
 
@@ -112,10 +116,12 @@ export default function FootyZone() {
     setCopied(false);
   }
 
+  /** Adds or removes a team from the favorites state. */
   function toggleFavorite(id: number) {
     setFavorites((current) => current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
   }
 
+  /** Copies the current draft's team names to the clipboard when results exist. */
   async function copyResults() {
     if (!results.length) return;
     await navigator.clipboard.writeText(results.map((team) => team.name).join(" • "));
@@ -125,6 +131,7 @@ export default function FootyZone() {
 
   const favoriteTeams = teams.filter((team) => favorites.includes(team.id));
 
+  /** Replaces the displayed live fixtures with the latest API response. */
   async function loadLive() {
     setLiveLoading(true);
     try {
