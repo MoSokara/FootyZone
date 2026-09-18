@@ -254,6 +254,8 @@ export default function FootyZone() {
               )}
             </div>
 
+            <DuelMode teams={teams} />
+
             <section className="card mt-5 rounded-3xl p-5">
               <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
                 <div>
