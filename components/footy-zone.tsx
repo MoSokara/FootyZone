@@ -5,6 +5,7 @@ import { Copy, Heart, RefreshCw, Search, Shield, Sparkles, Trophy } from "lucide
 import type { Team } from "@/lib/types";
 import TeamCard from "@/components/football/team-card";
 import DraftHistory from "@/components/football/draft-history";
+import { shuffle } from "@/lib/game";
 
 const LEAGUES = [
   { id: 39, name: "Premier League" },
